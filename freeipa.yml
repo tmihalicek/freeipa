@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  freeipa:
+    image: 'freeipa/freeipa-server:rocky-9'
+    container_name: freeipa
+    restart: unless-stopped
+    hostname: ipa.home.arpa
+    network_mode: host
+    environment:
+      IPA_SERVER_IP: 10.0.30.10
+      IPA_SERVER_HOSTNAME: ipa.home.arpa
+      TZ: Europe/Zagreb
+    tty: true
+    stdin_open: true
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - '/etc/localtime:/etc/localtime:ro'
+      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+      - '/opt/docker/freeipa:/data'
+    security_opt:
+      - 'seccomp:unconfined'
+    command:
+      - ipa-server-install
+      - '--no-ntp'
+      - '--realm=HOME.ARPA'
+      - '--domain=home.arpa'
+      - '--ds-password=pass1234'
+      - '--admin-password=pass1234'
+      - '--unattended'
+      - '-v'
+
